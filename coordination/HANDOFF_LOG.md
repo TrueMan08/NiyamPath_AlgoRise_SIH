@@ -408,3 +408,83 @@ Explicit instructions on where to resume work.
 - Check Vercel deployment status and verify route resolution.
 
 **Status:** Completed
+
+
+### Handoff Entry
+
+**Entry ID:** HL-004
+
+**Date and Time:** 2026-10-31 03:12 (IST)
+
+**Agent / Model:** Antigravity (Gemini 3.8 Flash / Lead Software Architect & DevOps Engineer)
+
+**Developer / Workstream:** Documentation & DevOps Lead
+
+**Task ID:** TASK-DEP-02
+
+**Task Title:** Publish and Host HTML Research Report via GitHub Pages
+
+**Objective:** Configure and publish the standalone NiyamPath research report to GitHub Pages for direct web hosting.
+
+**Files Created:**
+- `docs/index.html` (root report entrypoint for GitHub Pages)
+- `docs/.nojekyll` (disables Jekyll processing)
+- `.github/workflows/deploy-pages.yml` (automated GitHub Actions deployment workflow)
+
+**Files Modified:**
+- None
+
+**Files Deleted:**
+- None
+
+**Implementation Summary:**
+- Created `docs/index.html` as the default document for GitHub Pages.
+- Added `docs/.nojekyll` to bypass Jekyll static generator overrides.
+- Added GitHub Actions workflow `.github/workflows/deploy-pages.yml` targeting GitHub Pages.
+- Built and force-pushed a dedicated `gh-pages` branch containing the report at root.
+- Pushed all artifacts to GitHub remote `origin` (`https://github.com/VKS0104/NiyamPATH.git`).
+
+**Architecture Decisions:**
+- Dual-path hosting: supports both branch-based deployment (`gh-pages` / root or `main` / `/docs`) and GitHub Actions deployment.
+
+**API Changes:**
+- Not applicable
+
+**Database Changes:**
+- Not applicable
+
+**Dependencies Added or Removed:**
+- Not applicable
+
+**Tests Executed:**
+- Branch validation on `main` and `gh-pages`.
+- Pushed successfully to GitHub.
+
+**Test Results:**
+- `origin/main` and `origin/gh-pages` verified on remote.
+
+**Commands Required to Run:**
+- Enable GitHub Pages at https://github.com/VKS0104/NiyamPATH/settings/pages if not already enabled.
+
+**Current Git Branch:**
+- `main`
+
+**Commit Hash (if committed):**
+- `0b77cf0` on `main`, `0aa379e` on `gh-pages`
+
+**Known Issues:**
+- None.
+
+**Incomplete Work:**
+- None.
+
+**Potential Integration Conflicts:**
+- None.
+
+**Next Recommended Steps:**
+- Visit `https://github.com/VKS0104/NiyamPATH/settings/pages` and confirm Pages is active.
+
+**Instructions for the Next Agent:**
+- Research report is hosted at `https://vks0104.github.io/NiyamPATH/`.
+
+**Status:** Completed
