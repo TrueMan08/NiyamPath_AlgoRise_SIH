@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NiyamPath — Technical Research Report | SIH 2026 Problem Statement 26262</title>
+  <style>
+    :root {
+      --primary-navy: #0f172a;
+      --secondary-navy: #1e293b;
+      --accent-blue: #1d4ed8;
+      --light-blue: #eff6ff;
+      --border-color: #cbd5e1;
+      --text-main: #334155;
+      --text-heading: #0f172a;
+      --bg-light: #f8fafc;
+      --bg-white: #ffffff;
+      --success-green: #15803d;
+      --warning-amber: #b45309;
+      --font-stack: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: var(--font-stack);
+      line-height: 1.65;
+      color: var(--text-main);
+      background-color: var(--bg-light);
+      padding: 0;
+      margin: 0;
+    }
+
+    .container {
+      max-width: 960px;
+      margin: 0 auto;
+      background: var(--bg-white);
+      padding: 48px 56px;
+      box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -2px rgba(0,0,0,0.05);
+    }
+
+    /* Print Optimization */
+    @media print {
+      body {
+        background-color: #ffffff;
+      }
+      .container {
+        max-width: 100%;
+        padding: 0;
+        box-shadow: none;
+      }
+      .page-break {
+        page-break-before: always;
+      }
+      .no-print {
+        display: none !important;
+      }
+      a {
+        text-decoration: none;
+        color: inherit;
+      }
+    }
+
+    /* Cover Page */
+    .cover-page {
+      padding: 80px 0 100px;
+      border-bottom: 2px solid var(--border-color);
+      margin-bottom: 40px;
+    }
+
+    .badge-sih {
+      display: inline-block;
+      background-color: var(--light-blue);
+      color: var(--accent-blue);
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      padding: 6px 14px;
+      border-radius: 4px;
+      border: 1px solid #bfdbfe;
+      margin-bottom: 24px;
+    }
+
+    .cover-title {
+      font-size: 42px;
+      font-weight: 800;
+      color: var(--primary-navy);
+      line-height: 1.15;
+      margin-bottom: 12px;
+    }
+
+    .cover-subtitle {
+      font-size: 20px;
+      color: #475569;
+      font-weight: 500;
+      margin-bottom: 40px;
+    }
+
+    .metadata-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px 24px;
+      background-color: var(--bg-light);
+      padding: 24px 28px;
+      border-radius: 6px;
+      border: 1px solid var(--border-color);
+      font-size: 14px;
+    }
+
+    .metadata-item strong {
+      display: block;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #64748b;
+      margin-bottom: 3px;
+    }
+
+    .metadata-item span {
+      color: var(--primary-navy);
+      font-weight: 600;
+      font-size: 15px;
+    }
+
+    /* Typography & Section Styles */
+    h1, h2, h3, h4 {
+      color: var(--text-heading);
+      font-weight: 700;
+      line-height: 1.3;
+    }
+
+    h1 {
+      font-size: 26px;
+      border-bottom: 2px solid var(--primary-navy);
+      padding-bottom: 8px;
+      margin-top: 48px;
+      margin-bottom: 20px;
+    }
+
+    h2 {
+      font-size: 20px;
+      margin-top: 28px;
+      margin-bottom: 12px;
+      color: var(--secondary-navy);
+    }
+
+    h3 {
+      font-size: 16px;
+      margin-top: 20px;
+      margin-bottom: 8px;
+      color: var(--accent-blue);
+    }
+
+    p {
+      margin-bottom: 14px;
+      font-size: 14.5px;
+      text-align: justify;
+    }
+
+    ul, ol {
+      margin-left: 24px;
+      margin-bottom: 16px;
+      font-size: 14.5px;
+    }
+
+    li {
+      margin-bottom: 6px;
+    }
+
+    /* Tables */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
+      font-size: 13.5px;
+    }
+
+    th, td {
+      border: 1px solid var(--border-color);
+      padding: 10px 14px;
+      text-align: left;
+    }
+
+    th {
+      background-color: #f1f5f9;
+      color: var(--primary-navy);
+      font-weight: 700;
+    }
+
+    tr:nth-child(even) td {
+      background-color: #f8fafc;
+    }
+
+    /* Callout Boxes */
+    .callout {
+      border-left: 4px solid var(--accent-blue);
+      background-color: var(--light-blue);
+      padding: 16px 20px;
+      margin: 20px 0;
+      border-radius: 0 4px 4px 0;
+      font-size: 14px;
+    }
+
+    .callout-title {
+      font-weight: 700;
+      color: var(--accent-blue);
+      margin-bottom: 4px;
+    }
+
+    .callout-warning {
+      border-left-color: var(--warning-amber);
+      background-color: #fffbeb;
+    }
+
+    .callout-warning .callout-title {
+      color: var(--warning-amber);
+    }
+
+    /* Diagrams & Visual Blocks */
+    .diagram-container {
+      background-color: #0f172a;
+      color: #f8fafc;
+      padding: 24px;
+      border-radius: 6px;
+      margin: 24px 0;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 12.5px;
+      line-height: 1.5;
+      overflow-x: auto;
+    }
+
+    /* Table of Contents */
+    .toc {
+      background-color: var(--bg-light);
+      border: 1px solid var(--border-color);
+      padding: 24px 28px;
+      border-radius: 6px;
+      margin: 32px 0;
+    }
+
+    .toc h2 {
+      margin-top: 0;
+      margin-bottom: 14px;
+      font-size: 18px;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 8px;
+    }
+
+    .toc ol {
+      margin-left: 20px;
+      margin-bottom: 0;
+    }
+
+    .toc a {
+      color: var(--accent-blue);
+      text-decoration: none;
+      font-size: 14px;
+    }
+
+    .toc a:hover {
+      text-decoration: underline;
+    }
+
+    /* Header & Footer */
+    .report-footer {
+      border-top: 1px solid var(--border-color);
+      padding-top: 20px;
+      margin-top: 60px;
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      color: #64748b;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- COVER PAGE -->
+  <header class="cover-page">
+    <div class="badge-sih">Smart India Hackathon 2026 — Problem Statement 26262</div>
+    <h1 class="cover-title">NiyamPath</h1>
+    <div class="cover-subtitle">AI-Assisted Regulatory Workflow Automation and Compliance Monitoring Platform</div>
+
+    <div class="metadata-grid">
+      <div class="metadata-item">
+        <strong>Organisation / Bureau</strong>
+        <span>All India Council for Technical Education (AICTE) — Regulation Bureau</span>
+      </div>
+      <div class="metadata-item">
+        <strong>Problem Statement Title</strong>
+        <span>Integrated AICTE Approval Workflow Automation, Compliance Monitoring and Alert Management System</span>
+      </div>
+      <div class="metadata-item">
+        <strong>Category & Theme</strong>
+        <span>Software | Smart Automation</span>
+      </div>
+      <div class="metadata-item">
+        <strong>Team Name</strong>
+        <span>AlgoRise</span>
+      </div>
+      <div class="metadata-item">
+        <strong>Document Classification</strong>
+        <span>Technical Research & System Architecture Report</span>
+      </div>
+      <div class="metadata-item">
+        <strong>Publication Date</strong>
+        <span>October 2026</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- TABLE OF CONTENTS -->
+  <nav class="toc no-print">
+    <h2>Table of Contents</h2>
+    <ol>
+      <li><a href="#sec-1">Executive Summary</a></li>
+      <li><a href="#sec-2">Problem Statement Analysis</a></li>
+      <li><a href="#sec-3">Proposed Solution: NiyamPath</a></li>
+      <li><a href="#sec-4">Functional Modules Architecture</a></li>
+      <li><a href="#sec-5">AI Architecture and Assistive Capabilities</a></li>
+      <li><a href="#sec-6">System Architecture and Communication Topology</a></li>
+      <li><a href="#sec-7">Technology Stack Justification</a></li>
+      <li><a href="#sec-8">End-to-End Workflow Scenario</a></li>
+      <li><a href="#sec-9">Security, Role-Based Access Control, and Governance</a></li>
+      <li><a href="#sec-10">Feasibility and Phased Implementation Strategy</a></li>
+      <li><a href="#sec-11">Limitations, Governance Boundaries, and Assumptions</a></li>
+      <li><a href="#sec-12">Expected Qualitative Impact</a></li>
+      <li><a href="#sec-13">Verified References</a></li>
+    </ol>
+  </nav>
+
+  <!-- 1. EXECUTIVE SUMMARY -->
+  <section id="sec-1">
+    <h1>1. Executive Summary</h1>
+    <p>
+      The All India Council for Technical Education (AICTE), through its Regulation Bureau, governs the standards, approvals, and quality assurance of technical education institutions throughout India. The statutory approval lifecycle encompasses initial application processing, document verification, multi-tier scrutiny, Expert Visit Committee (EVC) scheduling, post-approval conditional undertakings, and ongoing compliance monitoring.
+    </p>
+    <p>
+      Currently, the coordination of these distributed workflows faces significant operational friction due to disconnected tracking tools, manual document examination, non-standardized communication channels for deficiencies, and limited proactive alerting for upcoming statutory deadlines.
+    </p>
+    <p>
+      <strong>NiyamPath</strong> is proposed by Team AlgoRise as an integrated, unified regulatory workflow automation and compliance monitoring platform. Built upon an authoritative, role-based Core Workflow Engine and augmented by an assistive AI Intelligence Layer, NiyamPath centralizes the lifecycle of institutional approvals, streamlines deficiency resolution cycles, tracks inspection schedules, monitors post-approval undertakings, and manages document validity.
+    </p>
+    <div class="callout">
+      <div class="callout-title">Core Operating Principle</div>
+      NiyamPath adheres to strict Human-in-the-Loop (HITL) governance. The AI Intelligence Layer acts strictly as an advisory accelerator for document classification, metadata extraction, preliminary checklist comparison, and grounded knowledge retrieval. Statutory approval decisions, deficiency issuance, and authoritative stage transitions remain strictly with authorized AICTE officials.
+    </div>
+  </section>
+
+  <!-- 2. PROBLEM STATEMENT ANALYSIS -->
+  <section id="sec-2">
+    <h1>2. Problem Statement Analysis</h1>
+    <p>
+      Smart India Hackathon 2026 Problem Statement ID 26262 tasks teams with developing an <em>Integrated AICTE Approval Workflow Automation, Compliance Monitoring and Alert Management System</em>. To construct an effective technical architecture, we delineate the official problem statement parameters from our operational analysis of regulatory workflows.
+    </p>
+
+    <h2>2.1 Core Operational Challenges Identified</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Operational Area</th>
+          <th>Existing Operational Challenge</th>
+          <th>Systemic Risk & Impact</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Workflow Routing</strong></td>
+          <td>Institutions follow varying routes (e.g. Scrutiny Only, Scrutiny + EVC, EVC + SAC/SHC) based on institution category and application type.</td>
+          <td>Rigid sequential systems cause manual routing errors and untracked processing delays.</td>
+        </tr>
+        <tr>
+          <td><strong>Document Scrutiny</strong></td>
+          <td>Officers must manually cross-examine extensive legal deeds, structural certificates, and land registrations across disparate pages.</td>
+          <td>High cognitive load, human error in noticing expired certificates, and prolonged turnaround times.</td>
+        </tr>
+        <tr>
+          <td><strong>Deficiency Cycles</strong></td>
+          <td>Deficiencies are often communicated via piecemeal correspondence without formal state-tracked versioning.</td>
+          <td>Prolonged multi-round resubmission cycles without clear audit trails or SLA adherence.</td>
+        </tr>
+        <tr>
+          <td><strong>EVC Coordination</strong></td>
+          <td>Scheduling inspections, tracking committee availability, and monitoring report submission lacks unified scheduling pipelines.</td>
+          <td>Delayed physical visits and stalled applications awaiting committee reports.</td>
+        </tr>
+        <tr>
+          <td><strong>Post-Approval Compliance</strong></td>
+          <td>Approvals granted subject to time-bound undertakings (e.g. 60-day fire safety certificate submission) rely on manual reminders.</td>
+          <td>Lapsed compliance deadlines and unverified institutional conditions.</td>
+        </tr>
+        <tr>
+          <td><strong>Document Expiry</strong></td>
+          <td>Lease deeds, municipal certificates, and NOCs carry discrete validity timelines.</td>
+          <td>Absence of automated expiry forecasting leads to reactive institutional non-compliance.</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- 3. PROPOSED SOLUTION -->
+  <section id="sec-3">
+    <h1>3. Proposed Solution: NiyamPath</h1>
+    <p>
+      NiyamPath addresses these operational bottlenecks by unifying the entire regulatory continuum into a single platform characterized by a **Two-Layer Architecture**:
+    </p>
+    <div class="diagram-container">
+=============================================================================
+                      NIYAMPATH SYSTEM ARCHITECTURE
+=============================================================================
+
+ LAYER 1: CORE REGULATORY WORKFLOW PLATFORM (Authoritative State)
+ ┌────────────────────────────────────────────────────────────────────────┐
+ │ • Application Management        • Configurable Workflow Engine        │
+ │ • Scrutiny & Deficiency Tracker • EVC Inspection Management           │
+ │ • Compliance & Undertakings     • Document Validity Registry          │
+ │ • Notifications & Escalations   • Workload & Pendency Analytics       │
+ │ • Tamper-Evident Audit Trail    • Role-Based Access Control (RBAC)    │
+ └────────────────────────────────────────────────────────────────────────┘
+                                    │
+                        Authorized Context Proxy
+                                    ▼
+ LAYER 2: AI INTELLIGENCE LAYER (Assistive & Advisory)
+ ┌────────────────────────────────────────────────────────────────────────┐
+ │ • Document Intelligence         • Regulatory Knowledge Assistant (RAG)│
+ │ • OCR & Metadata Extraction     • Source Citation Enforcement         │
+ │ • Checklist Comparison          • Preliminary Scrutiny Observations   │
+ │ • Cross-Document Discrepancy    • Descriptive Pendency Insights       │
+ └────────────────────────────────────────────────────────────────────────┘
+=============================================================================
+    </div>
+  </section>
+
+  <!-- 4. FUNCTIONAL MODULES ARCHITECTURE -->
+  <section id="sec-4">
+    <h1>4. Functional Modules Architecture</h1>
+    <p>
+      NiyamPath organizes institutional governance into ten dedicated functional modules operating on a unified relational data model:
+    </p>
+    <ol>
+      <li><strong>Application Lifecycle Management:</strong> Centralized repository tracking applications from initial draft and submission through scrutiny, resubmissions, inspections, and final determinations.</li>
+      <li><strong>Configurable Workflow Engine:</strong> Supports flexible stage definitions and transition validation rules (e.g., Scrutiny Only, Scrutiny + EVC, EVC + SAC/SHC) without hardcoding routes.</li>
+      <li><strong>Scrutiny & Deficiency Management:</strong> Formalizes officer observation recording, links deficiencies to specific requirements or documents, alerts institutions, and tracks resubmission cycles.</li>
+      <li><strong>Expert Visit Committee (EVC) Coordination:</strong> Manages committee assignment, inspection scheduling, visit tracking, and post-inspection report submission.</li>
+      <li><strong>Post-Approval Compliance Monitoring:</strong> Tracks conditional approvals and institutional undertakings with explicit due dates, evidence submissions, and officer verification workflows.</li>
+      <li><strong>Centralized Document & Validity Registry:</strong> Maintains document metadata, issue dates, expiry dates, version history, and automated renewal queues for expiring leases and safety certificates.</li>
+      <li><strong>Notifications & SLA Escalations:</strong> Event-driven notification dispatching alerts for deficiency issuance, stage advancements, compliance deadlines, and automated hierarchical escalations.</li>
+      <li><strong>Executive Reports & Analytics:</strong> Provides administrative dashboards depicting stage-wise pendency distribution, regional workload, and application ageing calculated from platform data.</li>
+      <li><strong>Immutable Audit Trail:</strong> Records tamper-evident, actor-attributed logs of every state mutation, deficiency issuance, document renewal, and officer review of AI suggestions.</li>
+      <li><strong>Role-Based Access Control (RBAC):</strong> Backend-enforced authorization across five personas: Institution User, Central Scrutiny Officer, Regional Officer, EVC Member, and Administrator.</li>
+    </ol>
+  </section>
+
+  <!-- 5. AI ARCHITECTURE & ASSISTIVE CAPABILITIES -->
+  <section id="sec-5">
+    <h1>5. AI Architecture and Assistive Capabilities</h1>
+    <p>
+      The AI Intelligence Layer provides purpose-driven automation designed to alleviate administrative overhead while maintaining absolute regulatory integrity:
+    </p>
+
+    <h2>5.1 Workstream C: AI Document Intelligence</h2>
+    <ul>
+      <li><strong>Document Parsing & Local OCR:</strong> Extracts digital vector text via PyMuPDF (fitz), with Tesseract OCR fallback for scanned certificates.</li>
+      <li><strong>Classification & Field Extraction:</strong> Automatically categorizes uploaded files (e.g. Registered Lease Deed, Land Title, Structural Stability Certificate, Fire NOC) and extracts key-value pairs (institution name, registered dates, expiry dates, land area in acres, issuing authority).</li>
+      <li><strong>Checklist Validation & Omission Detection:</strong> Compares extracted data against mandatory AICTE guidelines to identify missing mandatory fields or expired certificates before formal officer scrutiny.</li>
+      <li><strong>Cross-Document Discrepancy Detection:</strong> Detects conflicting information across submitted documents (e.g. discrepancy between campus address on lease deed versus application form).</li>
+      <li><strong>Draft Scrutiny Generation:</strong> Synthesizes provisional deficiency notices citing specific document pages, enabling officers to review, edit, or reject observations in a single click.</li>
+    </ul>
+
+    <h2>5.2 Workstream D: AI Knowledge Intelligence & RAG</h2>
+    <ul>
+      <li><strong>Regulatory Document Ingestion & Chunking:</strong> Parses official AICTE regulatory circulars and Approval Process Handbook excerpts into hierarchical semantic chunks preserving Chapter, Section, and Appendix metadata.</li>
+      <li><strong>Dense Vector Search:</strong> Uses dense embeddings and vector storage (ChromaDB) to retrieve relevant regulatory passages.</li>
+      <li><strong>Grounded Regulatory Assistant:</strong> Synthesizes source-cited answers to user queries. If a query falls outside the ingested knowledge base, the assistant strictly returns: <em>"The approved AICTE knowledge base does not contain this information."</em></li>
+      <li><strong>Pendency & Bottleneck Insights:</strong> Analyzes historical stage durations to identify workflow bottlenecks (e.g., regional EVC committee availability) and flag at-risk applications.</li>
+    </ul>
+
+    <div class="callout callout-warning">
+      <div class="callout-title">AI Governance Guardrail</div>
+      AI outputs are strictly classified as provisional suggestions. The AI service has no direct database access and possesses zero authority to approve or reject applications, issue statutory deficiencies, or advance workflow stages.
+    </div>
+  </section>
+
+  <!-- 6. SYSTEM ARCHITECTURE & COMMUNICATION -->
+  <section id="sec-6">
+    <h1>6. System Architecture and Communication Topology</h1>
+    <p>
+      NiyamPath operates on a secure three-tier decoupled architecture:
+    </p>
+    <div class="diagram-container">
+[ React 18 + Vite Frontend ] (Workstream A — Port 5173)
+             │
+             │ HTTPS / REST (JSON API Contracts)
+             ▼
+[ Java Spring Boot 3 Core Backend ] (Workstream B — Port 8080)
+   ├── Security & RBAC Enforcement
+   ├── Workflow State Machine
+   ├── PostgreSQL 16 Persistence (Flyway Migrations)
+   └── Secure Outbound AI Proxy
+             │
+             │ Internal Authorized Context Only
+             ▼
+[ Python FastAPI AI Intelligence Service ] (Workstreams C & D — Port 8000)
+   ├── Document Intelligence Engine (PyMuPDF / Tesseract)
+   └── Knowledge Intelligence RAG Engine (Gemini / ChromaDB)
+    </div>
+    <p>
+      <strong>Key Boundary Rules:</strong> The frontend communicates exclusively with the Spring Boot backend. The backend is the sole entity with direct database credentials. When AI analysis is requested, the backend scrubs sensitive data, packages authorized context, and invokes the FastAPI service.
+    </p>
+  </section>
+
+  <!-- 7. TECHNOLOGY STACK JUSTIFICATION -->
+  <section id="sec-7">
+    <h1>7. Technology Stack Justification</h1>
+    <table>
+      <thead>
+        <tr>
+          <th>Tier / Component</th>
+          <th>Chosen Technology</th>
+          <th>Architectural Justification</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Web Frontend</strong></td>
+          <td>React 18, Vite, JavaScript, Tailwind CSS</td>
+          <td>Rapid rendering, component modularity, instant HMR, lightweight bundle size, and responsive utility-first enterprise styling.</td>
+        </tr>
+        <tr>
+          <td><strong>UI Visualization</strong></td>
+          <td>Lucide React, Recharts</td>
+          <td>Accessible, professional icon sets and responsive SVG charting for workload and pendency dashboards.</td>
+        </tr>
+        <tr>
+          <td><strong>Core Backend</strong></td>
+          <td>Java 17/21, Spring Boot 3.3.x, Spring Data JPA</td>
+          <td>Enterprise-grade transaction management, robust type safety, mature security ecosystem, and native support for complex state machines.</td>
+        </tr>
+        <tr>
+          <td><strong>Relational Database</strong></td>
+          <td>PostgreSQL 16, Flyway</td>
+          <td>ACID compliance, relational integrity, JSONB support for audit states and metadata, and repeatable versioned DDL migrations.</td>
+        </tr>
+        <tr>
+          <td><strong>AI Service</strong></td>
+          <td>Python 3.11, FastAPI, Pydantic v2</td>
+          <td>Asynchronous high-concurrency request handling, native integration with machine learning libraries, and rigorous schema validation.</td>
+        </tr>
+        <tr>
+          <td><strong>Document & AI Libraries</strong></td>
+          <td>PyMuPDF, pdfplumber, ChromaDB, Gemini API</td>
+          <td>High-speed PDF text parsing, semantic vector retrieval, and state-of-the-art context-grounded reasoning.</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- 8. WORKFLOW SCENARIO -->
+  <section id="sec-8">
+    <h1>8. End-to-End Workflow Scenario</h1>
+    <p>
+      To illustrate the end-to-end operation of NiyamPath, we trace the journey of an institutional approval application:
+    </p>
+    <ol>
+      <li><strong>Submission:</strong> <em>Aryavart Institute of Technology</em> creates an application for Extension of Approval (EOA), uploads required deeds, certificates, and affidavits, and submits it to the portal.</li>
+      <li><strong>Initial Ingestion & Document Analysis:</strong> The AI Document Intelligence engine extracts registration numbers, issue dates, and expiry dates, flagging that the institution's structural safety certificate expired 60 days prior.</li>
+      <li><strong>Scrutiny:</strong> A Central Scrutiny Officer opens the scrutiny workspace. The system displays the extracted metadata alongside the flagged certificate and presents a suggested draft deficiency.</li>
+      <li><strong>Deficiency Issuance:</strong> The officer reviews the draft, adjusts the compliance deadline to 15 days, and issues the official deficiency. The application state updates to <code>DEFICIENCY_RAISED</code>.</li>
+      <li><strong>Resubmission:</strong> The institution receives an instant notification, obtains a renewed structural fitness certificate, and uploads the replacement document.</li>
+      <li><strong>Resolution & Forwarding:</strong> The officer re-reviews the renewed certificate, verifies compliance, marks the deficiency resolved, and forwards the application to the <code>EVC</code> stage.</li>
+      <li><strong>EVC Scheduling:</strong> The Regional Officer selects an expert committee and schedules a physical inspection for November 20. EVC members receive the inspection packet.</li>
+      <li><strong>Inspection & Conditional Approval:</strong> Following the visit, the committee submits an electronic inspection report. The Council grants approval subject to a 60-day undertaking for additional laboratory equipment.</li>
+      <li><strong>Compliance Monitoring & Verification:</strong> The system schedules an automated undertaking reminder at 30 days and 7 days. The institution uploads procurement invoices. An authorized officer verifies the evidence and marks the undertaking <code>COMPLETED</code>.</li>
+    </ol>
+  </section>
+
+  <!-- 9. SECURITY & GOVERNANCE -->
+  <section id="sec-9">
+    <h1>9. Security, Role-Based Access Control, and Governance</h1>
+    <ul>
+      <li><strong>Strict Role-Based Access Control (RBAC):</strong> Handled at the Spring Boot controller and service layer. Institution users cannot view regional dashboards or inspect peer applications.</li>
+      <li><strong>Data Minimization:</strong> The AI service receives only purpose-specific context required for extraction or verification; no arbitrary student or institutional financial data is exposed.</li>
+      <li><strong>Immutable Audit Logging:</strong> Every action emits an <code>AuditEvent</code> capturing actor ID, role, action, entity ID, previous state, new state, and timestamp, stored in a tamper-evident audit table.</li>
+      <li><strong>Human-in-the-Loop Governance:</strong> Statutory decisions and legal deficiencies require explicit human confirmation. AI is structurally prohibited from mutating authoritative state.</li>
+    </ul>
+  </section>
+
+  <!-- 10. FEASIBILITY & IMPLEMENTATION STRATEGY -->
+  <section id="sec-10">
+    <h1>10. Feasibility and Phased Implementation Strategy</h1>
+    <table>
+      <thead>
+        <tr>
+          <th>Phase</th>
+          <th>Milestone</th>
+          <th>Deliverables & Focus</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Phase 0</strong></td>
+          <td>Foundation & Architecture</td>
+          <td>Monorepo structure, API contracts, 20-entity relational database schema, multi-agent collaboration governance, and technical specifications.</td>
+        </tr>
+        <tr>
+          <td><strong>Phase 1</strong></td>
+          <td>Prototype & Interactive Verification</td>
+          <td>Full frontend interactive prototype with rich demonstration data, simulated AI scrutiny, configurable workflow stepper, and research reporting.</td>
+        </tr>
+        <tr>
+          <td><strong>Phase 2</strong></td>
+          <td>Service Integration & AI Pilots</td>
+          <td>Spring Boot REST endpoints connected to PostgreSQL, local OCR pipeline integration, and RAG knowledge assistant connected to curated AICTE circulars.</td>
+        </tr>
+        <tr>
+          <td><strong>Phase 3</strong></td>
+          <td>Pilot Deployment & Hardening</td>
+          <td>Field trials with simulated institutional datasets, load testing, security audits, and official regulatory workflow rule calibration.</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- 11. LIMITATIONS & ASSUMPTIONS -->
+  <section id="sec-11">
+    <h1>11. Limitations, Governance Boundaries, and Assumptions</h1>
+    <div class="callout callout-warning">
+      <div class="callout-title">Explicit Prototype Boundaries</div>
+      <p>In accordance with rigorous academic and engineering standards, we explicitly declare the boundaries of this project:</p>
+      <ul>
+        <li><strong>No Direct Production Access:</strong> NiyamPath has not been connected to live internal AICTE production databases or private APIs.</li>
+        <li><strong>Demonstration Data:</strong> The frontend prototype operates on realistic, fictional demonstration datasets. Dashboard figures and institutional records represent sample scenarios.</li>
+        <li><strong>Workflow Rule Verification:</strong> Specific workflow routes and stage sequences (e.g. SAC/SHC) remain configurable and must be verified against authoritative AICTE Approval Process Handbooks prior to production deployment.</li>
+        <li><strong>AI Output Verification:</strong> Extracted fields, discrepancy indicators, and scrutiny suggestions are advisory and must not be treated as autonomous statutory decisions.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 12. EXPECTED IMPACT -->
+  <section id="sec-12">
+    <h1>12. Expected Qualitative Impact</h1>
+    <ul>
+      <li><strong>Transparency & Visibility:</strong> Provides institutions and regulatory officers with a real-time, unambiguous view of application status, assigned officers, and pending obligations.</li>
+      <li><strong>Accelerated Scrutiny Turnaround:</strong> Pre-extracted metadata and checklist comparisons reduce officer cognitive load, enabling focused evaluation on substance rather than routine clerical verification.</li>
+      <li><strong>Proactive Compliance Adherence:</strong> Automated expiration alerts and undertaking deadline reminders significantly diminish accidental lapses in mandatory institutional requirements.</li>
+      <li><strong>Accountability & Audit Readiness:</strong> End-to-end event logging ensures complete institutional history is available for administrative oversight and quality audits.</li>
+    </ul>
+  </section>
+
+  <!-- 13. REFERENCES -->
+  <section id="sec-13">
+    <h1>13. Verified References</h1>
+    <ol>
+      <li><strong>All India Council for Technical Education (AICTE):</strong> Official Portal and Regulation Bureau Guidelines. Available at: <a href="https://www.aicte-india.org" target="_blank" rel="noopener">https://www.aicte-india.org</a>.</li>
+      <li><strong>AICTE Approval Process Handbook (APH 2024–2027):</strong> Statutory guidelines and procedures for grant of approval to technical institutions. Published by Member Secretary, AICTE, New Delhi.</li>
+      <li><strong>Lewis, P., et al. (2020):</strong> <em>Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks.</em> Advances in Neural Information Processing Systems (NeurIPS 2020), 33, 9459–9474.</li>
+      <li><strong>Smith, R. (2007):</strong> <em>An Overview of the Tesseract OCR Engine.</em> Ninth International Conference on Document Analysis and Recognition (ICDAR 2007), IEEE, pp. 629–633.</li>
+      <li><strong>Spring Boot Documentation:</strong> Version 3.3.x. VMware Tanzu / Broadcom. Available at: <a href="https://spring.io/projects/spring-boot" target="_blank" rel="noopener">https://spring.io/projects/spring-boot</a>.</li>
+      <li><strong>React Documentation:</strong> React 18 Architecture and Hooks. Meta Open Source. Available at: <a href="https://react.dev" target="_blank" rel="noopener">https://react.dev</a>.</li>
+      <li><strong>FastAPI Documentation:</strong> Modern, high-performance web framework for Python. Tiangolo. Available at: <a href="https://fastapi.tiangolo.com" target="_blank" rel="noopener">https://fastapi.tiangolo.com</a>.</li>
+      <li><strong>PostgreSQL 16 Documentation:</strong> The World's Most Advanced Open Source Relational Database. The PostgreSQL Global Development Group. Available at: <a href="https://www.postgresql.org/docs/16/" target="_blank" rel="noopener">https://www.postgresql.org/docs/16/</a>.</li>
+    </ol>
+  </section>
+
+  <footer class="report-footer">
+    <div>NiyamPath — SIH 2026 Problem Statement 26262 | Team AlgoRise</div>
+    <div>Page generated for evaluation & technical review</div>
+  </footer>
+
+</div>
+
+</body>
+</html>
