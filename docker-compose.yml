@@ -1,0 +1,83 @@
+version: '3.8'
+
+# ==============================================================================
+# NiyamPath — Docker Compose Deployment Topology (Planned Setup Artifact)
+# Team AlgoRise | SIH 2026 | Problem Statement 26262
+# Architecture: Frontend (React) -> Backend (Spring Boot) -> Database (PostgreSQL)
+#                                -> AI Service (FastAPI)
+# ==============================================================================
+
+services:
+  # Relational Database
+  postgres-db:
+    image: postgres:16-alpine
+    container_name: niyampath-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: niyampath_db
+      POSTGRES_USER: niyampath_user
+      POSTGRES_PASSWORD: placeholder_secure_db_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U niyampath_user -d niyampath_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Core Backend (Spring Boot)
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: niyampath-backend
+    restart: unless-stopped
+    depends_on:
+      postgres-db:
+        condition: service_healthy
+    environment:
+      SERVER_PORT: 8080
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-db:5432/niyampath_db
+      SPRING_DATASOURCE_USERNAME: niyampath_user
+      SPRING_DATASOURCE_PASSWORD: placeholder_secure_db_password
+      AI_SERVICE_BASE_URL: http://ai-service:8000
+    ports:
+      - "8080:8080"
+
+  # AI Intelligence Service (FastAPI)
+  ai-service:
+    build:
+      context: ./ai-service
+      dockerfile: Dockerfile
+    container_name: niyampath-ai-service
+    restart: unless-stopped
+    environment:
+      AI_SERVICE_HOST: "0.0.0.0"
+      AI_SERVICE_PORT: 8000
+      GEMINI_API_KEY: ${GEMINI_API_KEY:-placeholder_gemini_api_key}
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./ai-service/data:/app/data
+
+  # Web Frontend (React + Vite)
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: niyampath-frontend
+    restart: unless-stopped
+    depends_on:
+      - backend
+    environment:
+      VITE_API_BASE_URL: http://localhost:8080/api
+      VITE_AI_SERVICE_URL: http://localhost:8000
+    ports:
+      - "5173:5173"
+
+volumes:
+  postgres_data:
+    driver: local
+
