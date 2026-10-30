@@ -333,3 +333,78 @@ Explicit instructions on where to resume work.
 - When building the Spring Boot backend or FastAPI AI service in Phase 2, connect to the exact endpoints and models established in `coordination/API_CONTRACTS.md`.
 
 **Status:** Completed
+
+
+### Handoff Entry
+
+**Entry ID:** HL-003
+
+**Date and Time:** 2026-10-31 03:05 (IST)
+
+**Agent / Model:** Antigravity (Gemini 3.8 Flash / Lead Software Architect & Repo Engineer)
+
+**Developer / Workstream:** Workstream A (Frontend / Deployment)
+
+**Task ID:** TASK-DEP-01
+
+**Task Title:** Add Vercel SPA Route Rewrites Configuration
+
+**Objective:** Resolve Vercel 404: NOT_FOUND error on direct route access (e.g. `/dashboard`, `/applications`, `/scrutiny`) by configuring client-side SPA rewrites to `/index.html`.
+
+**Files Created:**
+- `frontend/vercel.json`
+
+**Files Modified:**
+- None
+
+**Files Deleted:**
+- None
+
+**Implementation Summary:**
+- Created `frontend/vercel.json` containing Vercel rewrite rule: `{"source": "/(.*)", "destination": "/index.html"}`.
+- Committed fix as `00a613e` ("fix: add Vercel SPA route rewrites") and pushed to `origin/main` on GitHub (`https://github.com/VKS0104/NiyamPATH.git`).
+
+**Architecture Decisions:**
+- Configured standard Vercel SPA rewrite so that all client-side paths are routed to `index.html` for React Router DOM to resolve.
+
+**API Changes:**
+- Not applicable
+
+**Database Changes:**
+- Not applicable
+
+**Dependencies Added or Removed:**
+- Not applicable
+
+**Tests Executed:**
+- `git status`, `git commit`, and `git push origin main`.
+
+**Test Results:**
+- Changes successfully committed and pushed to remote branch `main`.
+
+**Commands Required to Run:**
+- Vercel automatically detects the push and redeploys the frontend.
+
+**Current Git Branch:**
+- `main`
+
+**Commit Hash (if committed):**
+- `00a613e`
+
+**Known Issues:**
+- None.
+
+**Incomplete Work:**
+- None.
+
+**Potential Integration Conflicts:**
+- None.
+
+**Next Recommended Steps:**
+- Wait for Vercel deployment to reach "Ready" status.
+- Verify deep links: `/`, `/login`, `/dashboard`, `/applications`, `/scrutiny`.
+
+**Instructions for the Next Agent:**
+- Check Vercel deployment status and verify route resolution.
+
+**Status:** Completed
