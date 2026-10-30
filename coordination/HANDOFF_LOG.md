@@ -488,3 +488,82 @@ Explicit instructions on where to resume work.
 - Research report is hosted at `https://vks0104.github.io/NiyamPATH/`.
 
 **Status:** Completed
+
+
+### Handoff Entry
+
+**Entry ID:** HL-005
+
+**Date and Time:** 2026-10-31 03:16 (IST)
+
+**Agent / Model:** Antigravity (Gemini 3.8 Flash / Lead Software Architect & Frontend Engineer)
+
+**Developer / Workstream:** Workstream A (Frontend)
+
+**Task ID:** TASK-FE-ROUTE-REPORT
+
+**Task Title:** Add Native Research Report Route on Main Vercel Domain
+
+**Objective:** Enable zero-subscription public hosting of the HTML research report directly on the primary Vercel domain at `/report` and `/research-report`, as well as static `/report.html`.
+
+**Files Created:**
+- `frontend/src/features/report/ResearchReportPage.jsx`
+- `frontend/public/report.html`
+
+**Files Modified:**
+- `frontend/src/app/AppRoutes.jsx`
+- `frontend/src/components/layout/Sidebar.jsx`
+
+**Files Deleted:**
+- None
+
+**Implementation Summary:**
+- Created dedicated React component `ResearchReportPage.jsx` with full-bleed embedded viewer, floating action bar, and one-click "Print / Save PDF" feature.
+- Registered `/report` and `/research-report` routes in `AppRoutes.jsx`.
+- Placed static copy `frontend/public/report.html` to guarantee direct static asset accessibility.
+- Linked "View Research Report" in `Sidebar.jsx` directly to `/report`.
+- Verified production build via `npm run build` with zero errors.
+
+**Architecture Decisions:**
+- Hosted on the existing free Vercel deployment without requiring any paid GitHub Pro subscription or external static hosting service.
+
+**API Changes:**
+- Not applicable
+
+**Database Changes:**
+- Not applicable
+
+**Dependencies Added or Removed:**
+- Not applicable
+
+**Tests Executed:**
+- `npm run build` in `frontend/` (successful in 1.47s).
+
+**Test Results:**
+- Clean production bundle with `dist/report.html` and SPA routes.
+
+**Commands Required to Run:**
+- Pushed to `main` branch; Vercel automatically deploys to live URL.
+
+**Current Git Branch:**
+- `main`
+
+**Commit Hash (if committed):**
+- Pending commit
+
+**Known Issues:**
+- None.
+
+**Incomplete Work:**
+- None.
+
+**Potential Integration Conflicts:**
+- None.
+
+**Next Recommended Steps:**
+- Open `https://frontend-delta-ivory-2hd9pksu17.vercel.app/report` to view live.
+
+**Instructions for the Next Agent:**
+- The research report is accessible on the main Vercel domain at `/report`.
+
+**Status:** Completed

@@ -12,6 +12,7 @@ import { ComplianceManagementPage } from '../features/compliance/ComplianceManag
 import { DocumentManagementPage } from '../features/documents/DocumentManagementPage';
 import { NotificationsPage } from '../features/notifications/NotificationsPage';
 import { ReportsAnalyticsPage } from '../features/reports/ReportsAnalyticsPage';
+import { ResearchReportPage } from '../features/report/ResearchReportPage';
 
 export const AppRoutes = () => {
   return (
@@ -19,7 +20,11 @@ export const AppRoutes = () => {
       {/* Public Login */}
       <Route path="/login" element={<LoginPage />} />
 
-      {/* Authenticated / Demo Shell */}
+      {/* Standalone Research Report Viewers (No Sidebar wrapping) */}
+      <Route path="/report" element={<ResearchReportPage />} />
+      <Route path="/research-report" element={<ResearchReportPage />} />
+
+      {/* Authenticated / Demo Platform Shell */}
       <Route path="/" element={<MainLayout />}>
         <Route index element={<Navigate to="/dashboard" replace />} />
         <Route path="dashboard" element={<DashboardPage />} />
@@ -39,4 +44,3 @@ export const AppRoutes = () => {
     </Routes>
   );
 };
-

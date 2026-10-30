@@ -1,5 +1,5 @@
 import React from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, Link } from 'react-router-dom';
 import {
   LayoutDashboard,
   FileText,
@@ -77,15 +77,13 @@ export const Sidebar = () => {
           <strong>AICTE Regulation Bureau</strong><br/>
           Smart Automation System
         </div>
-        <a
-          href="/docs/NIYAMPATH_RESEARCH_REPORT.html"
-          target="_blank"
-          rel="noopener noreferrer"
+        <Link
+          to="/report"
           className="inline-flex items-center space-x-1.5 text-xs text-blue-400 hover:text-blue-300 transition-colors font-medium"
         >
           <HelpCircle className="w-3.5 h-3.5" />
           <span>View Research Report</span>
-        </a>
+        </Link>
       </div>
     </aside>
   );
